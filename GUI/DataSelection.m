@@ -22,7 +22,7 @@ function varargout = DataSelection(varargin)
 
 % Edit the above text to modify the response to help DataSelection
 
-% Last Modified by GUIDE v2.5 13-Feb-2019 15:02:27
+% Last Modified by GUIDE v2.5 01-Mar-2019 11:34:51
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -481,7 +481,12 @@ function saveAnalysis_Callback(hObject, eventdata, handles)
 % hObject    handle to saveAnalysis (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+enable = 'off';
+if(get(handles.saveAnalysis, 'Value'))
+    enable = 'on';
+end
+set(handles.lightSaveRadioButton,'Enable', enable);
+set(handles.fullSaveRadioButton,'Enable', enable);
 % Hint: get(hObject,'Value') returns toggle state of saveAnalysis
 
 
@@ -491,5 +496,46 @@ function cancel_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles.shouldStop = true;
+import java.awt.*;
+import java.awt.event.*;
+%Create a Robot-object to do the key-pressing
+rob=Robot;
+%Commands for pressing keys:
+% If the text cursor isn't in the edit box allready, then it
+% needs to be placed there for ctrl+a to select the text.
+% Therefore, we make sure the cursor is in the edit box by
+% forcing a mouse button press:
+rob.mousePress(InputEvent.BUTTON1_MASK );
+rob.mouseRelease(InputEvent.BUTTON1_MASK );
+% CONTROL + A :
+rob.keyPress(KeyEvent.VK_CONTROL)
+rob.keyPress(KeyEvent.VK_C)
+rob.keyRelease(KeyEvent.VK_C)
+rob.keyRelease(KeyEvent.VK_CONTROL)
 guidata(hObject, handles);
 disp('cancelling ')
+
+
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over fullSaveRadioButton.
+function fullSaveRadioButton_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to fullSaveRadioButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+if(get(handles.fullSaveRadioButton, 'Value'))
+    set(handles.lightSaveRadioButton, 'Value', 0);
+else
+    set(handles.lightSaveRadioButton, 'Value', 1);
+end
+
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over lightSaveRadioButton.
+function lightSaveRadioButton_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to lightSaveRadioButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+if(get(handles.lightSaveRadioButton, 'Value'))
+    set(handles.fullSaveRadioButton, 'Value', 0);
+else
+    set(handles.fullSaveRadioButton, 'Value', 1);
+end

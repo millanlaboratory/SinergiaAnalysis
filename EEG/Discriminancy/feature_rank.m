@@ -39,7 +39,7 @@ else
     criteria = 'Fisher_Score';
 end
 %% Check for number of instances being equal to number of labels
-if size(Input,2) ~= size(labels,1)
+if size(Input,2) ~= size(labels,2)
     error('Input and labels must have the same number of rows');
 end
 %% Inicdes for class labels

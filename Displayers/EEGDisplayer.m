@@ -4,6 +4,35 @@ classdef EEGDisplayer
     
     methods(Static)
         %% Discriminancy map
+        function displayDiscriminancyMap(eegRun)
+            resolution = 10;
+            averagedMvt = zeros(size(eegRun.mvt,1),size(eegRun.mvt,2), floor(size(eegRun.mvt,3)/resolution));
+            averagedRest = zeros(size(eegRun.rest,1),size(eegRun.rest,2), floor(size(eegRun.rest,3)/resolution));
+            for frequencyIndex = 1:size(averagedMvt,3)
+                averagedMvt(:,:,frequencyIndex) = nanmean(eegRun.mvt(:,:,(frequencyIndex-1)*resolution+1:frequencyIndex*resolution),3);
+                averagedRest(:,:,frequencyIndex) = nanmean(eegRun.rest(:,:,(frequencyIndex-1)*resolution+1:frequencyIndex*resolution),3);
+            end
+            [row, ~] = find(squeeze(any(isnan(averagedMvt),1)));
+            averagedMvt(:,unique(row),:) = [];
+            [row, ~] = find(squeeze(any(isnan(averagedRest),1)));
+            averagedRest(:,unique(row),:) = [];
+            labels = cell(size(averagedMvt,2) + size(averagedRest,2), 1);
+            for labelIndex = 1:size(averagedMvt,2)
+                labels{labelIndex} = 'Movement';
+            end
+            for labelIndex = 1:size(averagedRest,2)
+                labels{labelIndex + size(averagedMvt,2)} = 'Rest';
+            end
+            discriminancyMap = zeros(size(averagedMvt,1), size(averagedMvt,3));
+            for channel = 1:size(averagedMvt,1)
+                for frequency = 1:size(averagedMvt,3)
+                    [index,featureScore] = feature_rank([averagedMvt(channel, :, frequency) averagedRest(channel, :, frequency)], labels');
+                    discriminancyMap(channel, frequency) = featureScore;
+                end
+            end
+            EEGDisplayer.plotPDiscriminancyMap(discriminancyMap, 4:1:size(averagedMvt,3)+4, {eegRun.channelsData.labels})
+        end
+        
         function plotPDiscriminancyMap(discriminancyMap, frequencies, channelLabels)
             figure('Name', 'Discriminancy Map', 'WindowStyle', 'docked');
             imagesc(discriminancyMap, [0, 0.5]);
@@ -65,11 +94,11 @@ classdef EEGDisplayer
             drawnow();
         end
 
-        function topoplotPSD(PSDs, frequencies, frequenciesToPlot, chanlocs16, rowIndex, titleForRow)
+        function topoplotPSD(PSDs, frequencies, frequenciesToPlot, chanlocs64, rowIndex, titleForRow)
             for frequency = 1:length(frequenciesToPlot)
                 subplot(3,length(frequenciesToPlot),frequency + (rowIndex -1)*length(frequenciesToPlot));
                 indexToAverage = frequencies > frequenciesToPlot(frequency,1) & frequencies < frequenciesToPlot(frequency,2);
-                plot_mytopoplot(mean(PSDs(:,indexToAverage),2), chanlocs16, 'conv', 'off', 'style', 'map', 'limits', [-3 3]);
+                plot_mytopoplot(mean(PSDs(:,indexToAverage),2), chanlocs64, 'conv', 'off', 'style', 'map', 'limits', [-3 3]);
                 title([num2str(frequenciesToPlot(frequency,1)) '-' num2str(frequenciesToPlot(frequency, 2)) 'Hz']);
                 if(frequency == 1)
                    xl = xlim;

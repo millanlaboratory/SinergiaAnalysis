@@ -24,7 +24,7 @@ Please be careful about naming sessions. Calibration session should be name as `
 3. Select one or more sessions and press button **Validate**, runs should be listed
 4. Select one or more runs and press button **Validate**, analysis panel should appear
 5. Choose Analysis folder
-6. We recommend saving computed analysis to save time in future presentation
+6. We recommend saving computed analysis to save time in future presentation. Light version will only save computed psd while full will also save the raw eeg.
 7. If you have already done the analysis once and saved it in the analysis folder, you can choose to re-use it to save time.
 8. Select which visualization of the data you want to observe. The visualization will be applied on each class distinctively: rest and movement.
 9. Select which specific movement you want to analyze

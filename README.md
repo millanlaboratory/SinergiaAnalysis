@@ -34,4 +34,4 @@ Please be careful about naming sessions. Calibration session should be name as `
   * Per subject: runs of all sessions will be grouped by 4 categories: **calibration flexion**, **calibration extension**, **training flexion** and **training extension**. Visualization will be available for each category.
 11. When ready, press **Analyze** to start the analysis. Progress about the analysis will be displayed on the progress bar and the two text areas below.
 
-![alt text](https://github.com/millanlaboratory/SinergiaAnalysis/tree/master/resources/gui_marked.png "GUI image here")
+![alt text](https://github.com/millanlaboratory/SinergiaAnalysis/blob/master/resources/gui_marked.png "GUI image here")
